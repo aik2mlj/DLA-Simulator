@@ -1,0 +1,82 @@
+%!TEX program = xelatex
+% 完整编译: xelatex -> bibtex -> xelatex -> xelatex
+\documentclass[lang=cn,11pt,a4paper,cite=authoryear]{elegantpaper}
+
+\title{絮凝体DLA、RLA模型的分形维度影响因素探究}
+\author{闵乐钧 519030910326\\ 上海交通大学致远学院计算机方向}
+
+\date{\zhtoday}
+
+
+% 本文档命令
+\usepackage{array}
+\newcommand{\ccr}[1]{\makecell{{\color{#1}\rule{1cm}{1cm}}}}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+本文针对三维絮凝体的DLA模型，使用matlab进行模拟凝聚并探究凝聚时间、初始粒子体积密度、温度对絮凝体分形维数的影响。在RLA模型中，探究碰撞凝聚概率对分形维数的影响。
+\keywords{DLA，RLA，matlab，分形维数}
+\end{abstract}
+
+\section{实验背景和原理介绍}
+
+\subsection{DLA和RLA}
+絮体是用絮凝法处理水时水中的胶体和颗粒与絮凝剂相互作用的一种生成物。由于水体运动环境的不可预测性，我们很难通过常规意义下的力学来进行模拟。絮凝过程因而是一个随机的非线性过程，而如何预测这种过程以及测量、描述絮凝体的结构成为一个难题。在20世纪80年代后，新发展而来的分形数学理论得到了较完善的阐发，能够引入到絮凝体形态学研究领域，成为描述絮凝体结构的重要理论推动；另一方面，计算机的迅速发展使得大量的模拟运算成为可能。
+
+DLA(Diffusion-limited aggregation)模型即为计算机模拟絮凝体凝聚的一个经典模型。在有限空间中，预先随机放置粒子，让它们做布朗运动。两个粒子碰撞之后会粘连在一起，随着时间推进而形成具有分形特性的絮凝体。
+
+DLA模拟的步骤如下：
+\begin{enumerate}
+    \item 设置立方体空间线度$L$，粒子半径$r$，粒子布朗运动步长$l$（与温度正相关），总粒子数$n$。初始时，在立方体中随机无重叠地放置粒子。
+    \item 每个单位时间，让粒子作随机布朗运动。当两个粒子在这个单位时间之后有重叠（说明发生碰撞），则让这两个粒子凝聚在一起，不再做相对运动，并视为一个团簇。
+    \item 一定时间之后，模拟终止并计算各种参数。
+\end{enumerate}
+
+RLA(Reaction-limited aggregation)模型在DLA模型的基础上，考虑了每次碰撞粘连的概率。即在步骤2中，两个粒子发生碰撞将有概率凝聚。
+
+\subsection{分形维数计算方法}
+分形通常被定义为“一个粗糙或零碎的几何形状，可以分成数个部分，且每一部分都(至少近似地)是整体缩小后的形状”，即具有自相似的性质。\footnote{分形，维基百科，https://www.wikiwand.com/zh-hans/分形}絮凝体的分形形态意味着其结构的紧凑度和可沉降性，因此具有重要的意义。本实验中采用回转半径法计算分形维数。
+
+本模拟实验中，设定每个粒子的质量为1，则全部例子的总质量即为粒子数$n$。在三维多粒子系统中，可通过所有粒子的位置来计算得到回转张量(gyration tensor)，
+\begin{equation}
+    G = \frac{1}{n}\sum\limits_{i = 1}^n
+    \left(
+        \begin{matrix}
+            x_ix_i & x_iy_i & x_iz_i\\
+            y_ix_i & y_iy_i & y_iz_i\\
+            z_ix_i & z_iy_i & z_iz_i
+        \end{matrix}
+    \right)
+\end{equation}
+其中\((x_i, y_i, z_i)\)是第$i$个粒子关于粒子质心的位置矢量。
+
+求出回转张量的三个特征根$\lambda_i, i = 1, 2, 3$，可计算得到系统的回转半径(radius of gyration)
+\begin{equation}
+    R_g = \sqrt{\lambda_1^2 + \lambda_2^2 + \lambda_3^2}
+\end{equation}
+
+由豪斯多夫维数(Hausdorff dimension)的计算方法知，粒子数和其回转半径满足如下关系
+\begin{equation}
+    n = kR_g^{d_f}
+\end{equation}
+其中$d_f$即为所求的多孔体系分形维数(Fractal dimension)。在实验拟合中，利用取对数法，将(3)式变为
+\begin{equation}
+    log(n) = d_flog(R_g) + log(k)
+\end{equation}
+即说明可以通过线性拟合一定范围内的$log(R_g)\sim log(n)$关系图来计算得到分形维数。
+
+\section{实验内容和模拟结果}
+通过matlab模拟多粒子系统凝聚的DLA/RLA过程，探究以下几个问题：
+\subsection{DLA下，$d_f$随时间的变化}
+
+\subsection{DLA下，初始粒子体积密度与最终$d_f$的关系}
+\subsection{DLA下，温度与最终$d_f$的关系}
+\subsection{RLA粘连概率对最终$d_f$的影响}
+
+\section{结论}
+
+
+\end{document}
